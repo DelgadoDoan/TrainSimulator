@@ -2,7 +2,7 @@ import json
 import asyncio
 import math
 import random
-from .info import TRAIN_SPEED, TRAINS, ROUTES
+from .info import users, TRAIN_SPEED, TRAINS, ROUTES
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -10,16 +10,29 @@ class TrainConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.connected_clients = []
         self.active_tasks = []
-
-        if not self.connected_clients:
+        self.is_user = False
+        
+        if not self.is_user and not users:
             await self.accept()
             self.connected_clients.append(self.channel_name)
+            users["user"] = "in_use"
             await self.start_sim()
-    
+
 
     async def disconnect(self, close_code):
         for task in self.active_tasks:
             task.cancel()
+        if self.is_user:
+            del users["user"]
+
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        if data.get('type') == 'reload':
+            self.is_user = True
+        elif data.get('type') == 'open':
+            self.is_user = False
 
 
     async def start_sim(self):        

@@ -1,3 +1,5 @@
+users = {}
+
 TRAIN_SPEED = 0.015 # in km/s
 
 TRAINS = [

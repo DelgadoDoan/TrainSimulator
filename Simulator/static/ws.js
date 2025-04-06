@@ -1,8 +1,24 @@
 const socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
 
-let trains = {}; // Store trains by train ID
+let trains = {};
 
 socket.onopen = () => {
+    const userToken = sessionStorage.getItem('userToken');
+    
+    if (userToken) {
+        socket.send(JSON.stringify({ type: "reload", token: userToken }));
+    } else {
+        function generateUniqueToken() {
+            const array = new Uint32Array(1);
+            window.crypto.getRandomValues(array);
+            return array[0].toString(36);
+        }
+
+        const newToken = generateUniqueToken();
+        sessionStorage.setItem('userToken', newToken);
+        socket.send(JSON.stringify({ type: "open", token: newToken }));
+    }
+
     console.log("Connected");
 };
 
