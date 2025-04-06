@@ -1,8 +1,8 @@
-let socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
-
-let trains = {}; // Store trains by train ID
-
 window.onload = function() {
+    let socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
+
+    let trains = {}; // Store trains by train ID
+    
     socket.onopen = () => {
         console.log("Connected");
     };
