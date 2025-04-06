@@ -50,3 +50,10 @@ socket.onmessage = (event) => {
 socket.onclose = () => {
     console.log("Disconnected");
 };
+
+
+window.addEventListener('beforeunload', function() {
+    if (socket) {
+        socket.close();
+    }
+});
