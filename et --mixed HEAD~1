@@ -1,0 +1,71 @@
+[33mcommit cad35d8ddf42377c5b1d7f039ab99a4bc72dcbf7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 19:15:43 2025 +0800
+
+    another fix
+
+[33mcommit bfae35f8b2e808c5bd4fd5c39933202f33dd786a[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 19:15:22 2025 +0800
+
+    Finally fixed (I think)
+
+[33mcommit 5305bd506081c61a5f193f731912585582574e3e[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 18:16:00 2025 +0800
+
+    another fix
+
+[33mcommit bed31de09277ee08caad9f451b507382dc708d8d[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 18:09:36 2025 +0800
+
+    fixed reload handler
+
+[33mcommit 69f00a9eacec1558379f0346803eca11dacb9543[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 18:01:09 2025 +0800
+
+    added dc handler
+
+[33mcommit 25e39a51715006ecae6fcce95e150f3523b2ab68[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:53:47 2025 +0800
+
+    Fixed reloading final hopefully
+
+[33mcommit f7f98c46930013b6de41bfaf763c498dd58323a8[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:51:19 2025 +0800
+
+    Fixed reloading again..
+
+[33mcommit 58f9fe7bb41552c36471f55e3e82a00184db9d71[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:44:28 2025 +0800
+
+    Another reloading fix
+
+[33mcommit e61bba7232b0068c7a0f981d0802b86d55d95220[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:39:17 2025 +0800
+
+    Fixed reloading
+
+[33mcommit 55e3758636b6b86489544a548dc9ded1625f94de[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:13:29 2025 +0800
+
+    Procfile update
+
+[33mcommit 422b409f3686316cbc3e3d3502d844db9fdacf0d[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 17:08:08 2025 +0800
+
+    static files fix
+
+[33mcommit 0c81fd89f1ca4e182af7973f98c6757463b502ce[m
+Author: DelgadoDoan <doanmgd@gmail.com>
+Date:   Sun Apr 6 16:37:18 2025 +0800
+
+    Initial commit

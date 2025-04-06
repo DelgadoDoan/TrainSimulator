@@ -8,10 +8,19 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class TrainConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        await self.accept()
+        self.connected_clients = []
+        self.active_tasks = []
 
-        await self.start_sim()
+        if not self.connected_clients:
+            await self.accept()
+            self.connected_clients.append(self.channel_name)
+            await self.start_sim()
     
+
+    async def disconnect(self, close_code):
+        for task in self.active_tasks:
+            task.cancel()
+
 
     async def start_sim(self):        
         # Group trains that are from the same end
@@ -22,13 +31,14 @@ class TrainConsumer(AsyncWebsocketConsumer):
         mrt3_left_trains = [train for train in TRAINS if train["platform_side"] == "left" and train["line"] == "MRT-3"]
         mrt3_right_trains = [train for train in TRAINS if train["platform_side"] == "right" and train["line"] == "MRT-3"]
 
-        asyncio.create_task(self.send_data())
-        asyncio.create_task(self.start_line(lrt1_left_trains, ROUTES["LRT-1"]))
-        asyncio.create_task(self.start_line(lrt1_right_trains, ROUTES["LRT-1"]))
-        asyncio.create_task(self.start_line(lrt2_left_trains, ROUTES["LRT-2"]))
-        asyncio.create_task(self.start_line(lrt2_right_trains, ROUTES["LRT-2"]))
-        asyncio.create_task(self.start_line(mrt3_left_trains, ROUTES["MRT-3"]))
-        asyncio.create_task(self.start_line(mrt3_right_trains, ROUTES["MRT-3"]))
+        if not self.active_tasks:
+            self.active_tasks.append(asyncio.create_task(self.send_data()))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_left_trains, ROUTES["LRT-1"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_right_trains, ROUTES["LRT-1"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_left_trains, ROUTES["LRT-2"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_right_trains, ROUTES["LRT-2"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_left_trains, ROUTES["MRT-3"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_right_trains, ROUTES["MRT-3"])))
 
 
     async def send_data(self):
@@ -39,7 +49,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
 
     async def start_line(self, trains, route):
         for train in trains:
-            asyncio.create_task(self.run_train(train, route))
+            self.active_tasks.append(asyncio.create_task(self.run_train(train, route)))
             await asyncio.sleep(random.randint(180, 300)) # Wait until sending the next train
            
 
@@ -51,6 +61,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
             r.reverse()
 
         while True:
+            await asyncio.sleep(1)  # Update position every 1s
             if i < len(r) - 1 and i >= 0:
                 train["status"] = "running"
                 train["next_station"] = r[i+1]
@@ -82,8 +93,6 @@ class TrainConsumer(AsyncWebsocketConsumer):
                     train["eta"] = dist_left / v
                     train["pos"]["x"] += vx
                     train["pos"]["y"] += vy
-                
-                await asyncio.sleep(1)  # Update position every 1s
             else:
                 train["platform_side"] = "left" if train["platform_side"] == "right" else "right"
                 train["status"] = "idle"

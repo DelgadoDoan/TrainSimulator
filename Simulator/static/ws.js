@@ -1,5 +1,4 @@
-
-const socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
+const socket = new WebSocket('ws://127.0.0.1:8000/ws/simulator');
 
 let trains = {}; // Store trains by train ID
 
@@ -50,9 +49,4 @@ socket.onmessage = (event) => {
 
 socket.onclose = () => {
     console.log("Disconnected");
-};
-
-window.onbeforeunload = function() {
-    socket.onclose = function () {};
-    socket.close();
 };
