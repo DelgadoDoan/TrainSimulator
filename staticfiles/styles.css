@@ -1,0 +1,27 @@
+html, body {
+    overflow: hidden;
+    height: 100%;
+    position: absolute
+}
+
+.train-container {
+    position: absolute;
+}
+
+.train-label {
+    margin-top: 16px; /* space between label and box */
+    font-size: xx-small;
+}
+
+.train {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+}
+
+.station {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    border-radius: 50%;
+}
