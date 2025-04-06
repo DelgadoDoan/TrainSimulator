@@ -1,1 +1,1 @@
-web: gunicorn TrainSimulator.wsgi
+web: DJANGO_SETTINGS_MODULE=TrainSimulator.settings daphne -b 0.0.0.0 -p $PORT TrainSimulator.asgi:application
