@@ -51,4 +51,11 @@ window.onload = function() {
     socket.onclose = () => {
         console.log("Disconnected");
     };
+
+    
+    window.onbeforeunload = function() {
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.close();
+        }
+    };
 };
