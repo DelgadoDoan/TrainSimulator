@@ -2,27 +2,6 @@ users = {}
 
 TRAIN_SPEED = 0.015 # in km/s
 
-TRAINS = [
-    {"id": 1, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 2, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 3, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 4, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 5, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 6, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 7, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 8, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 9, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 10, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 11, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 12, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 13, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 14, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 15, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 16, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 17, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": None, "eta": None},
-    {"id": 18, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": None, "eta": None},
-]
-
 ROUTES = {
     "LRT-1": [
         {"id": 1, "station_name": "Roosevelt", "loc": {"x": 0, "y": 0}},
@@ -77,3 +56,24 @@ ROUTES = {
         {"id": 46, "station_name": "Taft", "loc": {"x": 8.197, "y": 21.755}},
     ]
 }
+
+TRAINS = [
+    {"id": 1, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": ROUTES["LRT-1"][1], "eta": None},
+    {"id": 2, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": ROUTES["LRT-1"][1], "eta": None},
+    {"id": 3, "line": "LRT-1", "platform_side": "right", "pos": {"x": 0, "y": 0}, "status": "idle", "next_station": ROUTES["LRT-1"][1], "eta": None},
+    {"id": 4, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": ROUTES["LRT-1"][18], "eta": None},
+    {"id": 5, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": ROUTES["LRT-1"][18], "eta": None},
+    {"id": 6, "line": "LRT-1", "platform_side": "left", "pos": {"x": 0, "y": 18.073}, "status": "idle", "next_station": ROUTES["LRT-1"][18], "eta": None},
+    {"id": 7, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][1], "eta": None},
+    {"id": 8, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][1], "eta": None},
+    {"id": 9, "line": "LRT-2", "platform_side": "right", "pos": {"x": 0, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][1], "eta": None},
+    {"id": 10, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][11], "eta": None},
+    {"id": 11, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][11], "eta": None},
+    {"id": 12, "line": "LRT-2", "platform_side": "left", "pos": {"x": 15.967, "y": 9.685}, "status": "idle", "next_station": ROUTES["LRT-2"][11], "eta": None},
+    {"id": 13, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": ROUTES["MRT-3"][1], "eta": None},
+    {"id": 14, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": ROUTES["MRT-3"][1], "eta": None},
+    {"id": 15, "line": "MRT-3", "platform_side": "right", "pos": {"x": 8.197, "y": 5.675}, "status": "idle", "next_station": ROUTES["MRT-3"][1], "eta": None},
+    {"id": 16, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": ROUTES["MRT-3"][11], "eta": None},
+    {"id": 17, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": ROUTES["MRT-3"][11], "eta": None},
+    {"id": 18, "line": "MRT-3", "platform_side": "left", "pos": {"x": 8.197, "y": 21.755}, "status": "idle", "next_station": ROUTES["MRT-3"][11], "eta": None},
+]

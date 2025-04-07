@@ -58,16 +58,16 @@ class TrainConsumer(AsyncWebsocketConsumer):
 
     async def run_train(self, train, route):
         r = route.copy()
-        i = 0
 
         if train["platform_side"] == "left":
             r.reverse()
-
+        
+        i = r.index(train["next_station"]) - 1
+        
         while True:
             await asyncio.sleep(1)  # Update position every 1s
             if i < len(r) - 1:
                 train["status"] = "running"
-                train["next_station"] = r[i+1]
                 
                 # Get distance to travel to next station
                 dx = r[i+1]["loc"]["x"] - r[i]["loc"]["x"]
@@ -89,8 +89,11 @@ class TrainConsumer(AsyncWebsocketConsumer):
                     train["eta"] = 0
                     train["pos"]["x"] = r[i]["loc"]["x"]
                     train["pos"]["y"] = r[i]["loc"]["y"]
+
+                    if i < len(r) - 1:
+                        train["next_station"] = r[i+1]
                     
-                    await asyncio.sleep(random.randint(30, 120))  # Train stops for 30s - 120s
+                    await asyncio.sleep(random.randint(60, 120))  # Train stops for 60s - 120s
                 else:
                     # If train has not yet arrived
                     train["eta"] = dist_left / v
@@ -99,8 +102,10 @@ class TrainConsumer(AsyncWebsocketConsumer):
             else:
                 train["platform_side"] = "left" if train["platform_side"] == "right" else "right"
                 train["status"] = "idle"
-                i = 0
+
                 r.reverse()
+                i = 0
+                train["next_station"] = r[i+1]
                                
                 await asyncio.sleep(random.randint(120, 180))  # Train stops for 120s - 180s
   
