@@ -57,8 +57,8 @@ mrt3Line = [
 const c = document.getElementById("canvas");
 const ctx = c.getContext("2d");
 
-c.width = window.screen.width;
-c.height = window.screen.height;
+c.width = window.innerWidth;
+c.height = window.innerHeight;
 
 let scale = 20;
 let offsetX = c.width * 2 / 5;
