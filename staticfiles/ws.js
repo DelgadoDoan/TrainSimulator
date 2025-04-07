@@ -7,7 +7,6 @@ socket.onopen = () => {
 };
 
 socket.onmessage = (event) => {
-    console.log(event.data);
     let data = JSON.parse(event.data);
 
     for (let train of data.message) {

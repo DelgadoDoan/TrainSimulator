@@ -16,6 +16,8 @@ class TrainConsumer(AsyncWebsocketConsumer):
             users["user"] = "user"
             self.has_connected = True
             await self.start_sim()
+        else:
+            await self.close()
 
 
     async def disconnect(self, close_code):
