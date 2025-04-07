@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://127.0.0.1:8000/ws/simulator');
+const socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
 
 let trains = {};
 
