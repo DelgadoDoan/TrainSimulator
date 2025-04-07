@@ -60,8 +60,8 @@ const ctx = c.getContext("2d");
 c.width = window.innerWidth;
 c.height = window.innerHeight;
 
-let scale = 20;
-let offsetX = c.width * 2 / 5;
+let scale = c.width / 60;
+let offsetX = c.width / 3;
 let offsetY = c.height / 9;
 
 
