@@ -8,31 +8,21 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class TrainConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.connected_clients = []
+        await self.accept()
+        self.has_connected = False
         self.active_tasks = []
-        self.is_user = False
-        
-        if not self.is_user and not users:
-            await self.accept()
-            self.connected_clients.append(self.channel_name)
-            users["user"] = "in_use"
+
+        if not users:
+            users["user"] = "user"
+            self.has_connected = True
             await self.start_sim()
 
 
     async def disconnect(self, close_code):
         for task in self.active_tasks:
             task.cancel()
-        if self.is_user:
+        if self.has_connected:
             del users["user"]
-
-
-    async def receive(self, text_data):
-        data = json.loads(text_data)
-
-        if data.get('type') == 'reload':
-            self.is_user = True
-        elif data.get('type') == 'open':
-            self.is_user = False
 
 
     async def start_sim(self):        
@@ -75,7 +65,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
 
         while True:
             await asyncio.sleep(1)  # Update position every 1s
-            if i < len(r) - 1 and i >= 0:
+            if i < len(r) - 1:
                 train["status"] = "running"
                 train["next_station"] = r[i+1]
                 

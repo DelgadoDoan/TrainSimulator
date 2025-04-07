@@ -1,7 +1,7 @@
 html, body {
     overflow: hidden;
     height: 100%;
-    position: absolute
+    position: relative
 }
 
 .train-container {
