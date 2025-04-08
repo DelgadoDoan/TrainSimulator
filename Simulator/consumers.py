@@ -2,7 +2,7 @@ import json
 import asyncio
 import math
 import random
-from .info import users, TRAIN_SPEED, TRAINS, ROUTES
+from .info import users, TRAIN_SPEED, TRAINS, STATIONS
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -12,12 +12,13 @@ class TrainConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         
         await self.accept()
-        self.has_connected = False
+        self.is_host = False
         self.active_tasks = []
-        
+
         if not users:
             users["user"] = "server"
-            self.has_connected = True
+            self.is_host = True
+            print("This is the host server...")
             await self.start_sim()
 
 
@@ -25,7 +26,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
         for task in self.active_tasks:
             task.cancel()
-        if self.has_connected:
+        if self.is_host:
             del users["user"]
 
 
@@ -40,29 +41,71 @@ class TrainConsumer(AsyncWebsocketConsumer):
 
         if not self.active_tasks:
             self.active_tasks.append(asyncio.create_task(self.send_data()))
-            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_left_trains, ROUTES["LRT-1"])))
-            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_right_trains, ROUTES["LRT-1"])))
-            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_left_trains, ROUTES["LRT-2"])))
-            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_right_trains, ROUTES["LRT-2"])))
-            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_left_trains, ROUTES["MRT-3"])))
-            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_right_trains, ROUTES["MRT-3"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_left_trains, STATIONS["LRT-1"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt1_right_trains, STATIONS["LRT-1"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_left_trains, STATIONS["LRT-2"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(lrt2_right_trains, STATIONS["LRT-2"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_left_trains, STATIONS["MRT-3"])))
+            self.active_tasks.append(asyncio.create_task(self.start_line(mrt3_right_trains, STATIONS["MRT-3"])))
 
 
     async def send_data(self):
         while True:
+            await self.calculate_etas(STATIONS, TRAINS)
+            
             await self.channel_layer.group_send(
                 self.group_name, {
                     "type": "broadcast_trains",
-                    "message": TRAINS,
+                    "message": {
+                        "trains": TRAINS,
+                        "stations": STATIONS,
+                    },
                 }
             )
             await asyncio.sleep(5)  # Send data every 5 seconds
+    
+    
+    async def broadcast_trains(self, event):
+        await self.send(text_data=json.dumps({"message": event["message"]}))
 
 
     async def start_line(self, trains, route):
         for train in trains:
             self.active_tasks.append(asyncio.create_task(self.run_train(train, route)))
-            await asyncio.sleep(random.randint(180, 300)) # Wait until sending the next train
+            await asyncio.sleep(random.randint(180, 300))  # Wait until sending the next train
+
+
+    async def calculate_etas(self, stations, trains):
+        for line in stations:
+            for station in stations[line]:
+                left_etas = []
+                right_etas = []
+
+                for train in trains:
+                    # Get distance from station to train
+                    dx = station["loc"]["x"] - train["pos"]["x"]
+                    dy = station["loc"]["y"] - train["pos"]["y"]
+                    dist = math.sqrt(dx**2 + dy**2)
+
+                    # Get train velocity (assumed constant velocity for each train)
+                    if dist == 0:
+                        eta = 0
+                    else:
+                        vx = TRAIN_SPEED * dx/dist
+                        vy = TRAIN_SPEED * dy/dist
+                        v = math.sqrt(vx**2 + vy**2)
+
+                        # Estimate ETA of train to station
+                        eta = dist / v
+
+                    if train["platform_side"] == "left":
+                        left_etas.append(eta)
+                    else:
+                        right_etas.append(eta)
+                
+                # Get mimimum etas
+                station["left_eta"] = min(left_etas) if left_etas else None
+                station["right_eta"] = min(right_etas) if right_etas else None
            
 
     async def run_train(self, train, route):
@@ -86,7 +129,6 @@ class TrainConsumer(AsyncWebsocketConsumer):
                 # Get train velocity
                 vx = TRAIN_SPEED * dx/dist
                 vy = TRAIN_SPEED * dy/dist
-                v = math.sqrt(vx**2 + vy**2)
 
                 # Get distance remaining from current position towards next station
                 dist_left = math.sqrt((r[i+1]["loc"]["x"] - train["pos"]["x"])**2 + (r[i+1]["loc"]["y"] - train["pos"]["y"])**2)
@@ -95,7 +137,6 @@ class TrainConsumer(AsyncWebsocketConsumer):
                 if dist_left <= TRAIN_SPEED:
                     i += 1
                     train["status"] = "idle"
-                    train["eta"] = 0
                     train["pos"]["x"] = r[i]["loc"]["x"]
                     train["pos"]["y"] = r[i]["loc"]["y"]
 
@@ -105,7 +146,6 @@ class TrainConsumer(AsyncWebsocketConsumer):
                     await asyncio.sleep(random.randint(60, 120))  # Train stops for 60s - 120s
                 else:
                     # If train has not yet arrived
-                    train["eta"] = dist_left / v
                     train["pos"]["x"] += vx
                     train["pos"]["y"] += vy
             else:
