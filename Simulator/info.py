@@ -1,6 +1,6 @@
 users = {}
 
-TRAIN_SPEED = 0.015 # in km/s
+TRAIN_SPEED = 0.015  # in km/s
 
 ROUTES = {
     "LRT-1": [

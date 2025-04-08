@@ -8,19 +8,21 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class TrainConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        self.group_name = "train_simulation_server"
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        
         await self.accept()
         self.has_connected = False
         self.active_tasks = []
-
+        
         if not users:
-            users["user"] = "user"
+            users["user"] = "server"
             self.has_connected = True
             await self.start_sim()
-        else:
-            await self.close()
 
 
     async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
         for task in self.active_tasks:
             task.cancel()
         if self.has_connected:
@@ -48,7 +50,12 @@ class TrainConsumer(AsyncWebsocketConsumer):
 
     async def send_data(self):
         while True:
-            await self.send(text_data=json.dumps({"message": TRAINS}))
+            await self.channel_layer.group_send(
+                self.group_name, {
+                    "type": "broadcast_trains",
+                    "message": TRAINS,
+                }
+            )
             await asyncio.sleep(5)  # Send data every 5 seconds
 
 
