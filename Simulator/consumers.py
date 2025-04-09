@@ -64,7 +64,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
                     "type": "send_message",
                     "message": {
                         "trains": TRAINS,
-                        "stations": [{"left_eta": s["left_eta"], "right_eta": s["right_eta"]} for l in STATIONS for s in STATIONS[l]],
+                        "etas": [{"left_eta": s["left_eta"], "right_eta": s["right_eta"]} for l in STATIONS for s in STATIONS[l]],
                     },
                 }
             )
