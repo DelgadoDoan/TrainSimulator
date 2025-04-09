@@ -5,14 +5,7 @@ const socket = new WebSocket('wss://trensimph.up.railway.app/ws/simulator');
 let trains = {};
 
 
-socket.onopen = () => {
-    console.log("Connected");
-}
-
-
-socket.onmessage = (event) => {
-    let data = JSON.parse(event.data);
-
+simulateTrains = (data) => {
     for (let train of data.message.trains) {
         let trainId = train.id;
         let trainLine = train.line
@@ -46,7 +39,23 @@ socket.onmessage = (event) => {
         trains[trainId].style.top = newY + "px";
 
         let trainBox = trains[trainId].querySelector(".train");
-        trainBox.style.background = train.status === "running" ? "green" : "red";    
+        trainBox.style.background = train.status === "running" ? "green" : "red";
+    }
+}
+
+
+socket.onopen = () => {
+    console.log("Connected");
+}
+
+
+socket.onmessage = (event) => {
+    let data = JSON.parse(event.data);
+
+    if (data.message.trains) {
+        simulateTrains(data);
+    } else {
+        console.log(data.message);
     }
 };
 

@@ -10,7 +10,7 @@ class TrainConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.group_name = "train_simulation_server"
         await self.channel_layer.group_add(self.group_name, self.channel_name)
-        
+
         await self.accept()
         self.is_host = False
         self.active_tasks = []
@@ -18,7 +18,13 @@ class TrainConsumer(AsyncWebsocketConsumer):
         if not users:
             users["user"] = "server"
             self.is_host = True
-            print("This is the host server...")
+            
+            await self.channel_layer.send(
+                self.channel_name, {
+                    "type": "send_message",
+                    "message": "This is the host server...",
+                }
+            )  
             await self.start_sim()
 
 
@@ -55,17 +61,17 @@ class TrainConsumer(AsyncWebsocketConsumer):
             
             await self.channel_layer.group_send(
                 self.group_name, {
-                    "type": "broadcast_trains",
+                    "type": "send_message",
                     "message": {
                         "trains": TRAINS,
-                        "stations": STATIONS,
+                        "stations": [{"left_eta": s["left_eta"], "right_eta": s["right_eta"]} for l in STATIONS for s in STATIONS[l]],
                     },
                 }
             )
             await asyncio.sleep(5)  # Send data every 5 seconds
     
     
-    async def broadcast_trains(self, event):
+    async def send_message(self, event):
         await self.send(text_data=json.dumps({"message": event["message"]}))
 
 
@@ -82,6 +88,9 @@ class TrainConsumer(AsyncWebsocketConsumer):
                 right_etas = []
 
                 for train in trains:
+                    if station["id"] == 1:  # Simulate unable to get ETA
+                        continue
+
                     # Get distance from station to train
                     dx = station["loc"]["x"] - train["pos"]["x"]
                     dy = station["loc"]["y"] - train["pos"]["y"]
